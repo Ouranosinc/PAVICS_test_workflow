@@ -108,7 +108,7 @@ def main():
 
     # The status location can be opened in a browser and refresh to get the
     # current status until the process finished or failed
-    print(execution.statusLocation)
+    logger.info('status_location : {0}'.format(execution.statusLocation))
 
     num_retries = 0
     while execution.isNotComplete():
