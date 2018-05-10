@@ -44,6 +44,21 @@ def check_status(url=None, response=None, sleep_secs=2, verify=False):
         execution.response = etree.fromstring(execution.response)
     return execution
 
+def get_token(server, user, password):
+    credentials = dict(provider_name='ziggurat',
+                       user_name=user,
+                       password=password)
+    s = requests.Session()
+    response = s.post('https://{server}/magpie/signin'.format(server=server), data=credentials)
+    if response.status_code != 200:
+        raise Exception('Magpie responded with status code {status_code}'.format(status_code=response.status_code)) 
+    return response.cookies.get('auth_tkt', domain=server)
+
+
+def get_token_header(server,user, password):
+   headers = dict(Cookie='auth_tkt={token}'.format(token=get_token(server,user,password)))
+   return headers
+
 
 def main():
     """
@@ -52,18 +67,34 @@ def main():
     basicConfig(level=INFO)
     logger = getLogger(__name__)
     parser = ArgumentParser()
-    parser.add_argument('target')
-    parser.add_argument('workflow_filename')
+    parser.add_argument('target',
+						help='target server')
+    parser.add_argument('workflow_filename',
+						help='filename of the json workflow')
+    parser.add_argument('-u', '--username',
+						help='Magpie username')
+    parser.add_argument('-p', '--password',
+						help='Magpie password')
     args = parser.parse_args()
+
+    if (args.username is None) != (args.password is None):
+        print "Error: params username requires password and vice-versa"
+        sys.exit(1)
+
+    if args.username:
+        headers = get_token_header(args.target,args.username,args.password)
+    else:
+        headers= None
 
     with open(args.workflow_filename) as wf_f:
         workflow = json.load(wf_f)
 
     host = args.target
-    url = 'http://{host}:8091/wps'.format(host=host)
+    url = 'https://{host}/twitcher/ows/proxy/malleefowl/wps'.format(host=host)
     logger.info("Calling a WPS instance at %s", url)
     client = wps.WebProcessingService(
         url=url,
+        headers=headers,
         skip_caps=True)
 
     logger.info("Executing the process 'workflow' by providing the workflow "
@@ -88,7 +119,7 @@ def main():
         try:
             execution = check_status(url=execution.statusLocation,
                                      verify=False,
-                                     sleep_secs=3)
+                                     sleep_secs=30)
             #logger.debug('response : ' + str(execution.response))
             #logger.debug('status : ' + execution.getStatus())
             #logger.debug('status_message : ' + execution.statusMessage)
