@@ -1,0 +1,27 @@
+{"name": "search_subset",
+ "tasks": [{
+    "name": "search",
+    "url": "https://${target}/twitcher/ows/proxy/catalog/wps",
+    "identifier": "pavicsearch",
+    "inputs": {
+        "query": "aet_pcp_1970",
+        "constraints": "project:Ouranos",
+        "type":"Aggregate"
+        },
+    "progress_range": [0, 10]        
+    },
+    {
+    "name": "subset",
+    "url": "https://${target}/twitcher/ows/proxy/flyingpigeon/wps",
+    "identifier": "subset",
+    "linked_inputs": {
+        "resource": {
+            "task":"search",
+            "output": "list_result"}
+        },
+    "inputs": {
+        "typename":"usa:states",
+        "featureids":["states.10"]},
+    "progress_range": [10, 100]
+    }]
+}

@@ -1,0 +1,42 @@
+{
+    "name": "parsingcatalog_parallel_subset",
+    "tasks": [{
+        "name": "ParsingCatalog",
+        "url": "https://${target}/twitcher/ows/proxy/malleefowl/wps",
+        "identifier": "thredds_urls",
+        "inputs": {
+            "url": "https://${target}/twitcher/ows/proxy/thredds/catalog/birdhouse/ouranos/subdaily/aet/pcp/catalog.xml"
+        },
+        "progress_range": [0, 10]
+    }],
+    "parallel_groups": [{
+        "name": "FlyGroup",
+        "map": {
+            "task": "ParsingCatalog",
+            "output": "output",
+            "as_reference": false
+        },
+        "reduce": {
+            "task": "Subsetting",
+            "output": "output",
+            "as_reference": true
+        },
+        "max_processes": 4,
+        "tasks": [{
+            "name": "Subsetting",
+            "url": "https://${target}/twitcher/ows/proxy/flyingpigeon/wps",
+            "identifier": "subset_WFS",
+            "inputs": {
+                "typename": "ADMINBOUNDARIES:canada_admin_boundaries",
+                "featureids": "canada_admin_boundaries.5",
+                "mosaic": "False"
+            },
+            "linked_inputs": {
+                "resource": {
+                    "task": "FlyGroup"
+                }
+            },
+            "progress_range": [10, 100]
+        }]
+    }]
+}

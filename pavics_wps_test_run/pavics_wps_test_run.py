@@ -4,12 +4,15 @@ from logging import getLogger, basicConfig, INFO
 from argparse import ArgumentParser
 from time import sleep
 from lxml import etree
+from string import Template
 
 from owslib import wps
 import requests
 import json
 import sys
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def check_status(url=None, response=None, sleep_secs=2, verify=False):
     """
@@ -87,7 +90,7 @@ def main():
         headers= None
 
     with open(args.workflow_filename) as wf_f:
-        workflow = json.load(wf_f)
+        workflow = json.loads(Template(wf_f.read()).safe_substitute(dict(target=args.target)))
 
     host = args.target
     url = 'https://{host}/twitcher/ows/proxy/malleefowl/wps'.format(host=host)
