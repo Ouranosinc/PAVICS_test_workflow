@@ -27,8 +27,8 @@
             "url": "https://${target}/twitcher/ows/proxy/flyingpigeon/wps",
             "identifier": "subset_WFS",
             "inputs": {
-                "typename": "ADMINBOUNDARIES:canada_admin_boundaries",
-                "featureids": "canada_admin_boundaries.5",
+                "typename": "opengeo:NE State and Province Boundaries",
+                "featureids": "NE State and Province Boundaries.564",
                 "mosaic": "False"
             },
             "linked_inputs": {
