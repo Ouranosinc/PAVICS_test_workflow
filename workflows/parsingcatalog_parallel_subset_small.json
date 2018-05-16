@@ -27,8 +27,8 @@
             "url": "https://${target}/twitcher/ows/proxy/flyingpigeon/wps",
             "identifier": "subset_WFS",
             "inputs": {
-                "typename": "opengeo:NE State and Province Boundaries",
-                "featureids": "NE State and Province Boundaries.564",
+                "typename": "opengeo:NE_State_and_Province_Boundaries",
+                "featureids": "NE_State_and_Province_Boundaries.564",
                 "mosaic": "False"
             },
             "linked_inputs": {

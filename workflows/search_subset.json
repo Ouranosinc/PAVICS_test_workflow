@@ -20,8 +20,8 @@
             "output": "list_result"}
         },
     "inputs": {
-        "typename":"opengeo:NE State and Province Boundaries",
-        "featureids":["NE State and Province Boundaries.4360"]},
+        "typename":"opengeo:NE_State_and_Province_Boundaries",
+        "featureids":["NE_State_and_Province_Boundaries.4360"]},
     "progress_range": [10, 100]
     }]
 }
